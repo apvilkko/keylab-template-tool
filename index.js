@@ -13,6 +13,10 @@ const diffs = [];
 const only1 = [];
 const only2 = [];
 const all = [];
+const cc = [];
+for (let i = 0; i < 128; ++i) {
+  cc.push(i);
+}
 
 const MAIN = {
   '1': 'Bank 1 P1',
@@ -235,7 +239,14 @@ function showResults(title, arr, data) {
       let detail2 = '';
       if (parts.length > 1) {
         const sub = getSub(MAIN[parts[0]]);
-        detail2 = sub && sub[parts[1]] ? (', ' + sub[parts[1]]) : '';
+        const hasDetail = sub && sub[parts[1]];
+        detail2 = hasDetail ? (', ' + sub[parts[1]]) : '';
+        if (hasDetail && sub[parts[1]] === 'CC#') {
+          const index = cc.indexOf(parseInt(val));
+          if (index > -1) {
+            cc.splice(index, 1);
+          }
+        }
       }
       detail = ' (' + MAIN[parts[0]] + detail2 + ')';
     }
@@ -254,4 +265,5 @@ if (command === 'diff') {
 } else if (command === 'dump') {
   doSort(all);
   showResults('Dump of ' + filename1, all, processed);
+  console.log('Available CCs:', cc.join(', '), '\n');
 }
